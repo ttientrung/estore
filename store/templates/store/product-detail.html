@@ -1,0 +1,175 @@
+{% extends 'store/_Master.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}{% endblock title %}
+{% block content %}
+<!-- Product Detail Start -->
+<div class="product-detail">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="product-detail-top">
+                    <div class="row align-items-center">
+                        <div class="col-md-5">
+                            <div class="product-slider-single normal-slider">
+                                <img src="{{product.image.url}}"
+                                    alt="{{product}}">
+                            </div>
+                        </div>
+                        <div class="col-md-7 align-text-top">
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <p style="margin: 15px 20px 0 0">Số lượt xem: 14</p>
+                                </div>
+                                <div class="col-md-12">
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <div class="product-content">
+                                            <div class="title">
+                                                <h2>{{product}}</h2>
+                                            </div>
+                                            <div class="price">
+                                                <h4>Giá bán:</h4>
+                                                <p>{{product.price|floatformat:0|intcomma}}đ
+                                                    {% comment %} <span>đ</span> {% endcomment %}
+                                                </p>
+                                            </div>
+                                            <div class="quantity">
+                                                <h4>Số lượng:</h4>
+                                                <div class="qty">
+                                                    <button type="button" class="btn-minus"><i
+                                                            class="fa fa-minus"></i></button>
+                                                    <input type="text" value="1" name="quantity">
+                                                    <button type="button" class="btn-plus"><i
+                                                            class="fa fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="action">
+                                                <button class="btn" type="submit" name="btnAdd2Cart"
+                                                    value="Thêm vào giỏ hàng">
+                                                    <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
+                                                </button>
+                                                <!--<a class="btn" href="#"><i class="fa fa-shopping-bag"></i>Mua ngay</a>-->
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row product-detail-bottom">
+                    <div class="col-lg-12">
+                        <ul class="nav nav-pills nav-justified">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="pill" href="#description">Description</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="pill" href="#specification">Specification</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="pill" href="#reviews">Reviews</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="description" class="container tab-pane active">
+                                <h4>Product description</h4>
+                                <p>{{product.content|safe}}</p>
+                            </div>
+                            <div id="specification" class="container tab-pane fade">
+                                <h4>Thông tin đang cập nhật ...</h4>
+                            </div>
+                            <div id="reviews" class="container tab-pane fade">
+                                <h4>Chức năng đang được xây dựng ...</h4>
+                                {% comment %} <div class="reviews-submitted">
+                                    <div class="reviewer">Phasellus Gravida - <span>01 Jan 2020</span></div>
+                                    <div class="ratting">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                                    <p>
+                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
+                                        doloremque laudantium, totam rem aperiam.
+                                    </p>
+                                </div>
+                                <div class="reviews-submit">
+                                    <h4>Give your Review:</h4>
+                                    <div class="ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <div class="row form">
+                                        <div class="col-sm-6">
+                                            <input type="text" placeholder="Name">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="email" placeholder="Email">
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <textarea placeholder="Review"></textarea>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <button>Submit</button>
+                                        </div>
+                                    </div>
+                                </div> {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product">
+                    <div class="section-header">
+                        <h1>Related Products</h1>
+                    </div>
+
+                    <div class="row align-items-center product-slider product-slider-3">
+                        {% for product in relate_products %}
+                        <div class="col-lg-3">
+                            <div class="product-item">
+                                <div class="product-title" style="height: 130px;">
+                                    <a href="#">{{product}}</a>
+                                    {% comment %} <div class="ratting">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div> {% endcomment %}
+                                </div>
+                                <div class="product-image">
+                                    <a href="{% url 'store:product' product.pk %}">
+                                        <img src="{{product.image.url}}" alt="Product Image">
+                                    </a>
+                                    {% comment %} <div class="product-action">
+                                        <a href="#"><i class="fa fa-cart-plus"></i></a>
+                                        <a href="#"><i class="fa fa-heart"></i></a>
+                                        <a href="#"><i class="fa fa-search"></i></a>
+                                    </div> {% endcomment %}
+                                </div>
+                                <div class="product-price">
+                                    <h3 style="font-size: 22px">{{product.price|floatformat:0|intcomma}}<span>đ</span></h3>
+                                    <a class="btn" href=""><i class="fa fa-shopping-cart"></i>Mua ngay</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            {% include 'store/parts/side_bar.html' %}
+        </div>
+    </div>
+</div>
+<!-- Product Detail End -->
+{% endblock content %}

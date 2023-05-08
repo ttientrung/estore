@@ -1,0 +1,88 @@
+{% load static %}
+{% load humanize %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="pdfkit-page-size" content="A4" />
+    <meta name="pdfkit-orientation" content="Landscape" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+    <title></title>
+</head>
+
+<body>
+    <div class="container">
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: left">
+                        <img width=150"
+                            src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAANQAAAA1CAMAAAAOGDUNAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABCUExURUdwTDU1NTU1NTU1NTU1NTU1Nf9vYTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1Nf9vYf9vYf9vYf9vYf9vYTU1NbPpJ6kAAAAUdFJOUwDuETPdZt13mSLMVYhEu6pEd2YiCvaE8gAABAhJREFUaN7dmtliqyAQhgGhA26cJf/7v+q50KQCM4gmTevhrtVO+ZiFWVS/bi3rtypWINJYFhEF9ZPWSSiyyJani0M5DW7FcF0oExcEmpafh7sh2utqyvQAMOb2OAP0oxxLfW7/I3vyt4DqAfSMoRkyyc89wmWgRgBzg0iD60AFANY0iOwuBOUBuBaRdCEo3Rrk4g+GKo2qCHz86q8D5Vqtz+A6UARgaJE4/IdQLu5BBRrX5Ir2BBrya35ZvNmtjyy5rzW/juYiLZzqCTExl4Rf/5Pxm/ey3SRS6CzUsB8oApfrplBTkeMzJ+WXbXbbd7vk8PpMhp7OQRkA/bNQtNYqZmtbkYfqNAC/IDvKz/dR8bixPJpmKNUztiQ5n+BTHgD8xuDMCCb38gApY6WKxgHAaDKx7hQU7atqB4pKQ1lsLBZQXkUp9x9KKS4zUBbqDwdpbFtCK0JNAHTxJNjC0z3gneTBQQM21A+8HWox5b47DWVzf191pQFtMqheS1YRWSkxMcADUKubjyehCIJBEQBfuJ5gwhMvJSSqkmveD96cAYzhDJTNFZKo0BTxhJc+C1L8VoGHoB4XRHSHoQaIVb/LHnlZUZ0kZdra0DGoTTuJpmNQMVPHduk0rno5zo4i7lbGUahNnqPJHIDSlQvBp8BeVmovSpkBfR5KqemRk8WpFapajg1psuzF3NnIUrY6PBL9sr4YAGCe2qBcLckP6V69aGODnFXTJuE5CaWUuTfUo2mBompBopOswgOQd97J0WZ4FkopNcxcisxvX95o6Spe7IbIOkxKo/bcj/WuBWvYh5qrbZv0qQw1o7peA6XUoPNq5wxUTPT47VBLQrptcp6B8o1Q9k1QKuj0WvliqJbe4/NQS4HzHvPr3wal+sSrRCj9kkCh3wQ1JvZ3JqTbxpBeSyBfDJU2ml5y+Vr5+Lr3QE1J+cNvf6ilSV2RJtmnOqrvgjLHElrbRP/d5lcpGrjSw7ZVXiegft9ut9vtV1P/aC9QVMo7rki06kjb5SugYkNIlwtxtpy3lY6+fwdUSC9fJxzmfKTxYitxcn9Q9AKomJ6eFOec5ORci8zWTD1+PZTLej9ihJp5WraZaWv39O5I6WkoVwyIpIl3AKA7Nst3qhmqQ21Q0fYZzx3KGDkaZ/YgfpvgUOqqs6XrV6GWPjEXcqbDUAEz0xFb+hRzeRfrSdyPD1mg50Y5ducGKRo+HWl7AmoZdH1OWKf7PHZktTd261sh1xXi8rv70M2rY1BrT/9z2OuWIfJZKGb1pU5ML44Si8Em9KCOQjFSsDZ1j0EpR+zXi4Psafwk2yUb0sT/9V4pOBTdCmrI3vlIR7RBG8lVuoJx3XS568cnB54mdX4R9Y/vXe/u/g+ke8ZiCds31QAAAABJRU5ErkJggg=="
+                            alt="logo">
+                    </td>
+                    <td style="text-align: right; vertical-align: bottom">
+                        <h6><strong>Mã đơn hàng: #{{ pk }}</strong></h6>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr style="border-bottom: 1px solid #ccc">
+        <p><strong>Họ tên khách hàng:</strong> {{ customer.first_name }} {{ customer.last_name }}</p>
+        <p><strong>Điện thoại:</strong> {{ customer.phone }}</p>
+        <p><strong>Địa chỉ:</strong> {{ customer.address }}</p>
+        <p><strong>Ngày đặt hàng:</strong> {{ order_date }}</p>
+        <table class="table table-striped table-borderless">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Hình ảnh</th>
+                    <th scope="col">Tên sản phẩm</th>
+                    <th scope="col" class="text-center">Số lượng</th>
+                    <th scope="col" class="text-right">Đơn giá</th>
+                    <th scope="col" class="text-right">Giảm giá</th>
+                    <th scope="col" class="text-right">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order_item in order_items %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>
+                        <img src="data:image/png;base64, {{ order_item.product_image|safe }}"
+                            alt="{{ order_item.product_name }}" width="50">
+                    </td>
+                    <td style="width: 40%">{{ order_item.product_name }}</td>
+                    <td class="text-center">{{ order_item.quantity }}</td>
+                    <td class="text-right">{{ order_item.price|floatformat:'0'|intcomma }}</td>
+                    <td class="text-right">{{ order_item.discount|floatformat:'0'|intcomma }}</td>
+                    <td class="text-right">{{ order_item.total_price|floatformat:'0'|intcomma }}</td>
+                </tr>
+                {% endfor %}
+                <tr style="color: red;">
+                    <td colspan="5" class="text-right">
+                        <h5><b>Tổng tiền</b></h5>
+                    </td>
+                    <td colspan="2" class="text-right">
+                        <h5><b>{{ order_items.0.total|floatformat:0|intcomma }} đ</b></h5>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

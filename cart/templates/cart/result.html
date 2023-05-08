@@ -1,0 +1,32 @@
+{% extends 'store/_Master.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Đặt hàng{% endblock %}
+
+{% block content %}
+
+    <!-- Breadcrumb Start -->
+    <div class="breadcrumb-wrap">
+        <div class="container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'store:index' %}">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Đặt hàng</li>
+            </ul>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Checkout Start -->
+    <div class="checkout">
+        <div class="container-fluid">
+            <div class="text-center">
+                <img src="{% static 'cart/success.png' %}" width="20%" />
+                <p><h2>Đặt hàng thành công</h2></p>
+                <p><h4>Cảm ơn bạn đã đặt hàng. Đơn hàng của bạn sẽ được chuyển đến bạn trong thời gian sớm nhất.</h4></p>
+                <br>
+            </div>
+        </div>
+    </div>
+    <!-- Checkout End -->
+
+{% endblock %}

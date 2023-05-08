@@ -1,0 +1,140 @@
+{% extends 'store/_Master.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Cart{% endblock title %}
+{% block content %}
+<!-- Cart Start -->
+<div class="cart-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="cart-page-inner">
+                    <div class="table-responsive">
+                        {% if cart|length > 0 %} 
+                        <table class="table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Đơn giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Thành tiền</th>
+                                    <th>Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody class="align-middle">
+                        
+                                {% for c in cart %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td style="width: 45%">
+                                        <div class="img">
+                                            <a href="{% url 'store:product' c.product.pk %}"><img src="{{c.product.image.url}}" alt="Image"></a>
+                                            <p>{{c.product.name}}</p>
+                                        </div>
+                                    </td>
+                                    <td>{{c.price|floatformat:0|intcomma}}</td>
+                                    <td>
+                                        <div class="qty">
+                                            <button id="btn-minus-{{c.product.pk}}" class="btn-minus"><i class="fa fa-minus"></i></button>
+                                            <input type="text" value="{{c.quantity}}" id="quantity1{{c.product.pk}}" name="quantity1{{c.product.pk}}">
+                                            <button id="btn-plus-{{c.product.pk}}" class="btn-plus"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                    </td>
+                                    <td>{{c.total_price|floatformat:0|intcomma}}</td>
+                                    <td><button type="button" data-toggle="modal" data-target="#sp{{c.product.pk}}"><i
+                                                class="fa fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                        
+                                <!-- Modal -->
+                                <div class="modal fade" id="sp{{c.product.pk}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Xóa khỏi giỏ hàng</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Bạn có đồng ý xóa sản phẩm <b>"{{c.product.name}}"</b> khỏi giỏ hàng không?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form method="POST" action="{% url 'cart:xoa_san_pham' c.product.pk %}">
+                                                    {% csrf_token %}
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy bỏ</button>
+                                                    <button type="submit" class="btn btn-primary">Đồng ý</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                            <p>Không có sản phẩm trong giỏ hàng</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="cart-page-inner">
+                    <div class="row">
+                        <!-- <div class="col-md-12">
+                            <div class="coupon">
+                                <input type="text" placeholder="Coupon Code">
+                                <button>Apply Code</button>
+                            </div>
+                        </div> -->
+                        <div class="col-md-12">
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div class="cart-summary">
+                                    <div class="cart-content">
+                                        <h1>Thông tin đơn hàng</h1>
+                                        <p>Tạm tính<span>{{cart.get_total_price|floatformat:0|intcomma}} đ</span></p>
+                                        <p>Giảm giá<span>{{cart.get_discount|floatformat:0|intcomma}} đ</span></p>
+                                        <p>Phí giao hàng<span>0 đ</span></p>
+                                        <h2>Tổng thành tiền<span>{{cart.get_final_total_price|floatformat:0|intcomma}} đ</span></h2>
+                                    </div>
+                                    <div class="cart-btn">
+                                        <button type="submit" name="btnUpDateCart" value="btnUpDateCart">Cập nhật giỏ hàng</button>
+                                        <button type="button" onclick="window.location.href='{% url 'cart:thanh_toan' %}'">Thanh toán</button>
+                                        {% for c in cart %}
+                                            <input type="hidden" value="{{c.quantity}}" id="quantity2{{c.product.pk}}" name="quantity2{{c.product.pk}}">
+                                            <script>
+                                                $(document).ready(function () {
+                                                    $("#quantity1{{ c.product.pk }}").change(function () {
+                                                        let so_luong = $("#quantity1{{ c.product.pk }}").val();
+                                                        $("#quantity2{{ c.product.pk }}").val(so_luong);
+                                                    });
+                                                });
+                                                $(document).ready(function () {
+                                                    $("#btn-minus-{{ c.product.pk }}").click(function () {
+                                                        let so_luong = $("#quantity1{{ c.product.pk }}").val();
+                                                        $("#quantity2{{ c.product.pk }}").val(so_luong);
+                                                    });
+                                                });
+                                                $(document).ready(function () {
+                                                    $("#btn-plus-{{ c.product.pk }}").click(function () {
+                                                        let so_luong = $("#quantity1{{ c.product.pk }}").val();
+                                                        $("#quantity2{{ c.product.pk }}").val(so_luong);
+                                                    });
+                                                });
+                                            </script>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Cart End -->
+{% endblock content %}

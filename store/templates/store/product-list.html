@@ -1,0 +1,98 @@
+{% extends 'store/_Master.html' %}
+{% load humanize %}
+{% block title %}{{subcategory}}{% endblock title %}
+{% block content %}
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+    <div class="container-fluid">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+            <li class="breadcrumb-item active">{{subcategory}}</li>
+        </ul>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Product List Start -->
+<div class="product-view">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="product-view-top">
+                            <form method="get">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h4>{{subcategory}} ({{products|length}})</h4>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="product-price-range">
+                                            <div class="dropdown">
+                                                <select class="dropdown-toggle" name="gia" required="">
+                                                    <option class="dropdown-item" value="">Lọc theo giá</option>
+                                                    <option class="dropdown-item" value="0-500000">0 - 500.000</option>
+                                                    <option class="dropdown-item" value="500000-1000000">500.000 - 1.000.000</option>
+                                                    <option class="dropdown-item" value="1000000-2000000">1.000.000 - 2.000.000</option>
+                                                    <option class="dropdown-item" value="2000000-3000000">2.000.000 - 3.000.000</option>
+                                                    <option class="dropdown-item" value="3000000-">3.000.000 trở lên</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="submit" class="btn">Lọc</button>
+                                        <input type="hidden" name="tu_khoa" value="">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    {% for product in products_pager %}
+                    <div class="col-md-4">
+                        <div class="product-item">
+                            <div class="product-title" style="height: 130px;">
+                                <a href="#">{{product}}</a>
+                                {% comment %} <div class="ratting">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div> {% endcomment %}
+                            </div>
+                            <div class="product-image">
+                                <a href="{% url 'store:product' product.pk %}">
+                                    <img src="{{product.image.url}}" alt="Product Image">
+                                </a>
+                                {% comment %} <div class="product-action">
+                                    <a href="#"><i class="fa fa-cart-plus"></i></a>
+                                    <a href="#"><i class="fa fa-heart"></i></a>
+                                    <a href="#"><i class="fa fa-search"></i></a>
+                                </div> {% endcomment %}
+                            </div>
+                            <div class="product-price">
+                                <form method="POST" action="{% url 'cart:mua_ngay' product.pk %}">
+                                    {% csrf_token %}
+                                    <h3 style="font-size: 22px">{{ product.price|floatformat:0|intcomma }}<span>đ</span></h3>
+                                    <button class="btn" type="submit" name="btnMuaNgay{{ product.pk }}" value="{{ product }}">
+                                        <i class="fa fa-shopping-cart"></i> Mua ngay
+                                    </button>
+                                    <input type="hidden" name="quantity{{ product.pk }}" value="1">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% include 'store/parts/pagination.html' with query_set=products_pager custom_range=custom_range %}
+            </div>
+            {% include 'store/parts/side_bar.html' %}
+        </div>
+    </div>
+</div>
+<!-- Product List End -->
+
+{% include 'store/parts/brands.html' %}
+{% endblock content %}

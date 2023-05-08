@@ -1,0 +1,119 @@
+{% extends 'store/_Master.html' %}
+{% load static %}
+{% block title %}Contact Us{% endblock title %}
+{% block content %}
+<!-- Contact Start -->
+<div class="contact">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="contact-info">
+                    <h2>Cơ sở chính</h2>
+                    <h3><i class="fa fa-map-marker"></i>227 Nguyễn Văn Cừ, Phường 4, Quận 5, Tp.HCM</h3>
+                    <h3><i class="fa fa-envelope"></i>tuvan@csc.hcmus.edu.vn</h3>
+                    <h3><i class="fa fa-phone"></i>(028)38.351.056 - Ext: 111</h3>
+                    <div class="">
+                        <button class="btn btn-sm" data-toggle="modal" data-target="#map1">
+                            <i class="fa fa-map-pin"></i>&nbsp;&nbsp;&nbsp;Xem bản đồ
+                        </button>
+                    </div>
+                    <hr>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d125428.19556160591!2d106.682257!3d10.762887!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x1cc90b59bd91e938!2zVHJ1bmcgVMOibSBUaW4gSOG7jWMgLSDEkEggS2hvYSBI4buNYyBU4buxIE5oacOqbg!5e0!3m2!1sen!2sus!4v1628833197022!5m2!1sen!2sus" width="100%" height="50%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="contact-info">
+                    <h2>Chi nhánh</h2>
+                    <h3><i class="fa fa-map-marker"></i>21-23 Nguyễn Biểu, Phường 1, Quận 5, Tp.HCM</h3>
+                    <h3><i class="fa fa-envelope"></i>tuvan@csc.hcmus.edu.vn</h3>
+                    <h3><i class="fa fa-phone"></i>(028)38.351.056 - Ext: 222</h3>
+                    <div class="">
+                        <button class="btn btn-sm" data-toggle="modal" data-target="#map2">
+                            <i class="fa fa-map-pin"></i>&nbsp;&nbsp;&nbsp;Xem bản đồ
+                        </button>
+                    </div>
+                    <hr>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1648.0512650024066!2d106.68422357002207!3d10.753849993423694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752ee1ff354f3f%3A0x18f40d9f2c7f8e18!2sInformatics%20Center%20-%20University%20of%20Science%20(CS2)!5e0!3m2!1sen!2s!4v1673493124565!5m2!1sen!2s" width="100%" height="50%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="contact-form">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div>
+                        </div>
+                        <div class="form-group">
+                            {{form.name}}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{form.phone_number}}
+                            </div>
+                            <div class="col-md-6">
+                                {{form.email}}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{form.subject}}
+                        </div>
+                        <div class="form-group">
+                            {{form.message}}
+                        </div>
+                        <div>
+                            <button type="submit" class="btn contact_btn">
+                                <i class="fa fa-location-arrow"></i> Gửi thông tin
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal bản đồ 1 -->
+    <div class="modal fade" id="map1" tabindex="-1" aria-labelledby="map1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="map1">Cơ sở chính: 227 Nguyễn Văn Cừ, Phường 4, Quận 5, Tp.HCM</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="contact-map">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d125428.19556160591!2d106.682257!3d10.762887!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x1cc90b59bd91e938!2zVHJ1bmcgVMOibSBUaW4gSOG7jWMgLSDEkEggS2hvYSBI4buNYyBU4buxIE5oacOqbg!5e0!3m2!1sen!2sus!4v1628833197022!5m2!1sen!2sus" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal bản đồ 2 -->
+    <div class="modal fade" id="map2" tabindex="-1" aria-labelledby="map2" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="map2">Chi nhánh: 21-23 Nguyễn Biểu, Phường 1, Quận 5, Tp.HCM</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="contact-map">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1648.0512650024066!2d106.68422357002207!3d10.753849993423694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752ee1ff354f3f%3A0x18f40d9f2c7f8e18!2sInformatics%20Center%20-%20University%20of%20Science%20(CS2)!5e0!3m2!1sen!2s!4v1673493124565!5m2!1sen!2s" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Contact End -->
+{% endblock content %}

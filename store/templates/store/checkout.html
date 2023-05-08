@@ -1,0 +1,157 @@
+{% extends 'store/_Master.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+        
+    <!-- Breadcrumb Start -->
+    <div class="breadcrumb-wrap">
+        <div class="container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'store:index' %}">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Thanh toán</li>
+            </ul>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Checkout Start -->
+    <div class="checkout cart-page" style="padding-top: 0;">
+        <div class="container-fluid">
+            <form method="post">
+            {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-8" style="padding: 0">
+                        <div class="col-lg-12">
+                            <div class="checkout-inner">
+                                <div class="billing-address">
+                                {% with s_khach_hang=request.session.s_customer %}
+                                    {% if s_khach_hang %}
+                                        <h2>Thông tin người nhận</h2>
+                                        <p><strong>Họ tên khách hàng: {{ s_khach_hang.first_name }} {{ s_khach_hang.last_name }}</strong></p>
+                                        <p><strong>Điện thoại: <a href="tel:{{ s_khach_hang.phone }}">{{ s_khach_hang.phone }}</a></strong></p>
+                                        <p><strong>Địa chỉ: {{ s_khach_hang.address }}</strong></p>
+                                    {% else %}
+                                        <div>Quý khách chưa đăng nhập. Vui lòng <a href="{% url 'customer:login' %}">đăng nhập</a> để thực hiện đặt hàng.</div>
+                                    {% endif %}
+                                {% endwith %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="cart-page-inner">
+                                {% if cart|length > 0 %}
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <th>STT</th>
+                                                    <th>Tên sản phẩm</th>
+                                                    <th>Đơn giá</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Thành tiền</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="align-middle">
+                                            {% for item in cart %}
+                                                {% with product=item.product %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td style="width: 45%">
+                                                            <div class="img">
+                                                                <a href="">
+                                                                    <img src="{{ product.image.url }}" alt="{{ product.name }}"></a>
+                                                                <p><a href="">{{ product.name }}</a></p>
+                                                            </div>
+                                                        </td>
+                                                        <td style="text-align: right">{% load humanize %}{{ product.price|floatformat:0|intcomma }} đ</td>
+                                                        <td>{{ item.quantity }}</td>
+                                                        <td style="text-align: right">{% load humanize %}{{ item.total_price|floatformat:0|intcomma }} đ</td>
+                                                    </tr>
+                                                {% endwith %}
+                                            {% endfor %}
+                                            <tr>
+                                                <td colspan="4" style="text-align: right"><strong>Tổng cộng:</strong></td>
+                                                <td style="text-align: right"><strong>{% load humanize %}{{ cart.get_final_total_price|floatformat:0|intcomma }} đ</strong></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="text-right mt-3">
+                                        <a class="btn" href="{% url 'store:index' %}">Tiếp tục mua hàng</a>
+                                        <a class="btn" href="{% url 'cart:cart' %}">Cập nhật giỏ hàng</a>
+                                    </div>
+                                {% else %}
+                                    <div>Không có sản phẩm trong giỏ hàng.</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="padding: 0">
+                        <div class="col-lg-12">
+                            <div class="checkout-inner">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            <div class="coupon">
+                                                <input type="text" name="ma_giam_gia" placeholder="Mã giảm giá" value="{{ma_giam_gia}}">
+                                                <button type="submit" name="btnMaGiamGia" value="Mã giảm giá">Sử dụng</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="checkout-summary">
+                                            <h1>Thông tin đơn hàng</h1>
+                                            <p>Tạm tính<span>{% load humanize %}{{ cart.get_total_price|floatformat:0|intcomma }} đ</span></p>
+                                            <p>Giảm giá:<span>{% load humanize %}{{ cart.get_discount|floatformat:0|intcomma }} đ</span></p>
+                                            <p>Phí giao hàng<span>0 đ</span></p>
+                                            <h2>Tổng thành tiền<span>{% load humanize %}{{ cart.get_final_total_price|floatformat:0|intcomma }} đ</span></h2>
+                                        </div>
+
+                                        <div class="checkout-payment">
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <div class="checkout-btn">
+                                                    {% if request.session.s_customer %}
+                                                        <button type="submit" name="btnDatHang" value="Đặt hàng">Đặt hàng</button>
+                                                    {% else %}
+                                                        <button type="button" data-toggle="modal" data-target="#btnDatHang">Đặt hàng</button>
+                                                    {% endif %}
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Checkout End -->
+
+    <!-- Modal nút đặt hàng -->
+    <div class="modal fade" id="btnDatHang" tabindex="-1"
+         aria-labelledby="ThongBao" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ThongBao">Thông báo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Bạn chưa đăng nhập. Vui lòng <a href="{% url 'customer:login' %}">đăng nhập</a> để tiếp tục chức
+                    năng đặt hàng.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đã hiểu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends 'store/_Master.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}My Account{% endblock title %}
+{% block content %}
+<!-- My Account Start -->
+<div class="my-account">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" id="account-nav" data-toggle="pill" href="#account-tab" role="tab"><i
+                            class="fa fa-user"></i>Account Details</a>
+                    <a class="nav-link" id="orders-nav" data-toggle="pill" href="#orders-tab" role="tab"><i
+                            class="fa fa-shopping-bag"></i>Orders</a>
+                    <a class="nav-link" href="{% url 'customer:logout' %}"><i class="fa fa-sign-out-alt"></i>Logout</a>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="account-tab" role="tabpanel"
+                        aria-labelledby="account-nav">
+                        <h4>Account Details</h4>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{result|safe}}
+                                </div>
+                                <div class="col-md-6">
+                                    {{form.last_name}}
+                                </div>
+                                <div class="col-md-6">
+                                    {{form.first_name}}
+                                </div>
+                                <div class="col-md-6">
+                                    {{form.phone}}
+                                </div>
+                                <div class="col-md-6">
+                                    {{form.email}}
+                                </div>
+                                <div class="col-md-12">
+                                    {{form.address}}
+                                </div>
+                                <div class="col-md-12">
+                                    <button class="btn" name="btnUpdate" value="Update">Update Account</button>
+                                    <br><br>
+                                </div>
+                            </div>
+                        </form>
+                        <h4>Change Password</h4>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{result_change|safe}}
+                                </div>
+                                <div class="col-md-12">
+                                    <input class="form-control" type="password" placeholder="Current Password"
+                                        name="curr_password">
+                                </div>
+                                <div class="col-md-6">
+                                    {{pass_form.password}}
+                                </div>
+                                <div class="col-md-6">
+                                    {{pass_form.confirm_password}}
+                                </div>
+                                <div class="col-md-12">
+                                    <button class="btn" type="submit" name="btnChangePass"
+                                        value="Change Password">Change Password</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade active" id="orders-tab" role="tabpanel" aria-labelledby="orders-nav">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Mã đơn hàng</th>
+                                        <th>Ngày đặt hàng</th>
+                                        <th>Tổng thành tiền</th>
+                                        <th>Trạng thái</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>#{{ order.pk }}</td>
+                                            <td>{{ order.created }}</td>
+                                            <td>{{ order.total|floatformat:0|intcomma }}</td>
+                                            <td>
+                                                {% if order.status == 1 %}
+                                                <span class="badge badge-pill badge-success">Đã giao</span>
+                                                {% else %}
+                                                <span class="badge badge-pill badge-danger">Chưa giao</span>
+                                                {% endif %}
+                                            </td>
+                                            <td><button class="btn btn-sm" data-toggle="modal"
+                                                        data-target="#o{{ order.pk }}">Chi tiết</button></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+{% for order_id, order_items in dict_orders.items %}
+    <div class="modal fade" id="o{{ order_id }}" tabindex="-1" aria-labelledby="order_detail" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="order_detail">Đơn hàng #{{ order_id }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Hình ảnh</th>
+                                <th scope="col">Tên sản phẩm</th>
+                                <th scope="col" class="text-center">Số lượng</th>
+                                <th scope="col" class="text-right">Đơn giá</th>
+                                <th scope="col" class="text-right">Giảm giá</th>
+                                <th scope="col" class="text-right">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order_item in order_items %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>
+                                    <img src="{{ order_item.product_image.url }}" alt="{{ order_item.product_name }}" width="70">
+                                </td>
+                                <td style="width: 40%">{{ order_item.product_name }}</td>
+                                <td class="text-center">{{ order_item.quantity }}</td>
+                                <td class="text-right">{{ order_item.price|floatformat:'0'|intcomma }}</td>
+                                <td class="text-right">{{ order_item.discount|floatformat:'0'|intcomma }}</td>
+                                <td class="text-right">{{ order_item.total_price|floatformat:'0'|intcomma }}</td>
+                            </tr>
+                            {% endfor %}
+                            <tr style="color: red;">
+                                <td colspan="5" class="text-right"><h5><b>Tổng tiền:</b></h5></td>
+                                <td colspan="2" class="text-right">
+                                    <h5><b>{{ order_items.0.total|floatformat:0|intcomma }} đ</b></h5>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'customer:xuat_bao_cao_don_hang' order_id %}" class="btn btn-sm btn-secondary"
+                       target="_blank">
+                        <i class="fa fa-download"></i> Tải đơn hàng
+                    </a>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
+                        <i class="fa fa-times"></i> Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<!-- My Account End -->
+{% endblock content %}

@@ -1,0 +1,84 @@
+{% extends 'store/_Master.html' %}
+{% load static %}
+{% block title %}Login{% endblock title %}
+{% block content %}
+<!-- Login Start -->
+<div class="login">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6">
+                <form method="POST">
+                {% csrf_token %}
+                    <div class="register-form">
+                        <div class="row">
+                            <div class="col-md-12">
+                                {{result|safe}}
+                            </div>
+                            <div class="col-md-6">
+                                <label>{{form.first_name.label}}</label>
+                                {{form.first_name}}
+                            </div>
+                            <div class="col-md-6">
+                                <label>{{form.last_name.label}}</label>
+                                {{form.last_name}}
+                            </div>
+                            <div class="col-md-12">
+                                <label>{{form.email.label}}</label>
+                                {{form.email}}
+                            </div>
+                            <div class="col-md-6">
+                                <label>{{form.password.label}}</label>
+                                {{form.password}}
+                            </div>
+                            <div class="col-md-6">
+                                <label>{{form.confirm_password.label}}</label>
+                                {{form.confirm_password}}
+                            </div>
+                            <div class="col-md-12">
+                                <label>{{form.phone.label}}</label>
+                                {{form.phone}}
+                            </div>
+                            <div class="col-md-12">
+                                <label>{{form.address.label}}</label>
+                                {{form.address}}
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn" name="btnRegister" value="register">Sign Up</button>
+                            </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <form method="POST">
+                {% csrf_token %}
+                <div class="login-form">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{login_result|safe}}
+                        </div>
+                        <div class="col-md-6">
+                            <label>E-mail / Username</label>
+                            <input class="form-control" type="text" placeholder="E-mail / Username" name="email">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Password</label>
+                            <input class="form-control" type="password" placeholder="Password" name="password">
+                        </div>
+                        {% comment %} <div class="col-md-12">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="newaccount">
+                                <label class="custom-control-label" for="newaccount">Keep me signed in</label>
+                            </div>
+                        </div> {% endcomment %}
+                        <div class="col-md-12">
+                            <button class="btn" type="submit" name="btnlogin" value="login">Sign In</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
