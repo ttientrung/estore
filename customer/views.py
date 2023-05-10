@@ -7,6 +7,7 @@ from django.forms.models import model_to_dict
 from cart.models import Order, OrderItem
 from store.models import Product
 from django.conf import settings
+from customer.libs import *
 import base64
 import pdfkit
 from django.template.loader import render_to_string
@@ -17,6 +18,32 @@ salt = '123'
 def login(request):
     if 's_customer' in request.session:
         return redirect('store:index')
+
+    # Lấy thông tin tỉnh/tp, quận/huyện, phường/xã
+    du_lieu = read_json_internet('http://api.laptrinhpython.net/vietnam')
+
+    # Tỉnh/TP
+    list_provinces = []
+    str_districts = []
+    str_wards = []
+    list_districts_2 = []
+    for province in du_lieu:
+        list_provinces.append(province['name'])
+        # Quận/Huyện
+        list_districts_1 = []
+        for dictrict in province['districts']:
+            d = dictrict['prefix'] + ' ' + dictrict['name']
+            list_districts_1.append(d)
+            list_districts_2.append(d)
+            # Phường/Xã
+            list_wards = []
+            for ward in dictrict['wards']:
+                w = ward['prefix'] + ' ' + ward['name']
+                list_wards.append(w)
+            else:
+                str_wards.append('|'.join(list_wards))
+        else:
+            str_districts.append('|'.join(list_districts_1))
 
     result = ""
     form = FormDangKy()
@@ -33,7 +60,7 @@ def login(request):
                 post.password = hasher.encode(form.cleaned_data['password'], salt)
                 post.confirm_password = form.cleaned_data['confirm_password']
                 post.phone = form.cleaned_data['phone']
-                post.address = form.cleaned_data['address']
+                post.address = form.cleaned_data['address'] + ', ' + form.cleaned_data['ward'] + ', ' + form.cleaned_data['district'] + ', ' + form.cleaned_data['province']
                 post.save()
                 result = '''
                 <div class="alert alert-success" role="alert">
@@ -76,7 +103,11 @@ def login(request):
                     Login fail!
                 </div>
                 '''
-    context = {'form': form, 'result': result, 'login_result': login_result}
+    context = {'form': form, 'result': result, 'login_result': login_result,
+        'provinces': tuple(list_provinces),
+        'str_districts': tuple(str_districts),
+        'str_wards': tuple(str_wards),
+        'list_districts': list_districts_2}
     return render(request, 'store/login.html', context)
 
 def logout(request):
@@ -172,7 +203,7 @@ def my_account(request):
     context = {'cart': cart, 'form': form, 'result': result, 'pass_form': pass_form, 'result_change': result_change, 'dict_orders': dict_orders, 'orders': orders}
     return render(request, 'store/my-account.html', context)
 
-def xuat_bao_cao_don_hang(request, pk):
+def report_export(request, pk):
     if 's_customer' not in request.session:
         return redirect('customer:login')
     customer = request.session.get('s_customer')

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 import os
 from django.conf import settings
 from .models import *
@@ -11,8 +11,7 @@ from django.http import JsonResponse
 from rest_framework import viewsets, permissions
 from store.serializers import ProductSerializer
 import feedparser
-
-
+from urllib.parse import urlencode
 
 # Create your views here.
 brands = Brand.objects.all()
@@ -25,7 +24,8 @@ def index(request):
     family_product = Product.objects.filter(subcategory_id__in = family_product).order_by('-public_day')
     kitchen_product = SubCategory.objects.filter(category_id = 2).values('id')
     kitchen_product = Product.objects.filter(subcategory_id__in = kitchen_product).order_by('-public_day')
-    context = {'slider': slider, 'brands': brands, 'family_product': family_product[:20], 'kitchen_product': kitchen_product[:20], 'cart': cart}
+    context = {'slider': slider, 'brands': brands, 'family_product': family_product[:20],
+               'kitchen_product': kitchen_product[:20], 'cart': cart}
     return render(request, 'store/index.html', context)
 
 def test(request):
@@ -53,14 +53,20 @@ def products(request, pk):
     subcategories = SubCategory.objects.all().order_by('name')
     if pk == 0:
         products = Product.objects.all().order_by("-public_day")
-        subcategory = 'Tất cả sản phẩm'
+        subcategory = f'Tất cả sản phẩm {len(products)}'
     else:
         products = Product.objects.filter(subcategory_id = pk).order_by('name')
         subcategory = SubCategory.objects.get(pk=pk)
 
+    price_range = ''
+    search_query= ''
+    if request.GET.get('price'):
+        price_range, search_query, products, subcategory = filter_by_price(request, pk)
     products_pager, custom_range = paginate(request, products, products_per_page)
 
-    context = {'products': products, 'subcategories': subcategories, 'subcategory': subcategory, 'products_pager': products_pager, 'custom_range': custom_range, 'brands': brands, 'cart': cart}
+    context = {'products': products, 'subcategories': subcategories, 'subcategory': subcategory,
+               'products_pager': products_pager, 'custom_range': custom_range, 'brands': brands,
+               'cart': cart, 'price_range': price_range, 'search_query': search_query}
     return render(request, 'store/product-list.html', context)
 
 def product(request, pk):
@@ -68,7 +74,8 @@ def product(request, pk):
     product = Product.objects.get(pk=pk)
     relate_products = Product.objects.filter(subcategory_id = product.subcategory_id)
     subcategories = SubCategory.objects.all().order_by('name')
-    context = {'product': product, 'relate_products': relate_products, 'subcategories': subcategories, 'cart': cart}
+    context = {'product': product, 'relate_products': relate_products,
+               'subcategories': subcategories, 'cart': cart}
     return render(request, 'store/product-detail.html', context)
 
 def contact(request):
@@ -96,15 +103,20 @@ def search(request):
     search_query = ""
     if request.GET.get('search_query'):
         search_query = request.GET.get('search_query').strip()
-    search_result = Product.objects.distinct().filter(
-        Q(name__icontains = search_query)|
-        Q(content__icontains = search_query)|
-        Q(subcategory__name__icontains = search_query)
-    ).order_by('-public_day')
+    search_result = search_func(search_query)
+    if request.GET.get('price'):
+        price_range = request.GET.get('price')
+        search_query = request.GET.get('search_query').strip()
+        base_url = reverse('store:category', kwargs={'pk': 0})
+        query_string = urlencode({'price': price_range, 'search_query': search_query})
+        url = f'{base_url}?{query_string}'
+        return redirect(url)
+
     total = len(search_result)
     search_result, custom_range = paginate(request, search_result, products_per_page)
     subcategories = SubCategory.objects.all().order_by('name')
-    context = {'search_result': search_result, 'search_query': search_query, 'subcategories': subcategories, 'custom_range': custom_range, 'total': total, 'brands': brands, 'cart': cart}
+    context = {'search_result': search_result, 'search_query': search_query, 'subcategories': subcategories,
+               'custom_range': custom_range, 'total': total, 'brands': brands, 'cart': cart}
     return render(request, 'store/search-result.html', context)
 
 def rss(request):

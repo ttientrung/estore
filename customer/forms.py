@@ -24,15 +24,15 @@ class FormDangKy(forms.ModelForm):
     address = forms.CharField(label='Address', widget=forms.Textarea(attrs={
         "class": "form-control", "placeholder": "Address", "rows": "3",
     }))
-    # province = forms.CharField(label='Tỉnh/TP', widget=forms.Select(attrs={
-    #     "class": "form-control",
-    # }))
-    # district = forms.CharField(label='Quận/Huyện', widget=forms.Select(attrs={
-    #     "class": "form-control",
-    # }))
-    # ward = forms.CharField(label='Phường/Xã', widget=forms.Select(attrs={
-    #     "class": "form-control",
-    # }))
+    province = forms.CharField(label='Province', widget=forms.Select(attrs={
+        "class": "form-control",
+    }))
+    district = forms.CharField(label='District', widget=forms.Select(attrs={
+        "class": "form-control",
+    }))
+    ward = forms.CharField(label='Ward', widget=forms.Select(attrs={
+        "class": "form-control",
+    }))
 
     class Meta:
         model = Customer

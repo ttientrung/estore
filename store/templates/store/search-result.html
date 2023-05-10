@@ -21,7 +21,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="product-view-top">
-                            <form method="get">
+                            <form method="get" id="filterForm">
                                 <div class="row">
                                     <div class="col-md-8">
                                         <h4>Kết quả tìm kiếm cho {{search_query}} ({{total}})</h4>
@@ -29,20 +29,20 @@
                                     <div class="col-md-3">
                                         <div class="product-price-range">
                                             <div class="dropdown">
-                                                <select class="dropdown-toggle" name="gia" required="">
+                                                <select class="dropdown-toggle" name="price" required="">
                                                     <option class="dropdown-item" value="">Lọc theo giá</option>
-                                                    <option class="dropdown-item" value="0-500000">0 - 500.000</option>
-                                                    <option class="dropdown-item" value="500000-1000000">500.000 - 1.000.000</option>
-                                                    <option class="dropdown-item" value="1000000-2000000">1.000.000 - 2.000.000</option>
-                                                    <option class="dropdown-item" value="2000000-3000000">2.000.000 - 3.000.000</option>
-                                                    <option class="dropdown-item" value="3000000-">3.000.000 trở lên</option>
+                                                    <option class="dropdown-item" value="0-500000"{% if price_range == '0-500000' %}selected{% endif %}>0 - 500.000</option>
+                                                    <option class="dropdown-item" value="500000-1000000"{% if price_range == '500000-1000000' %}selected{% endif %}>500.000 - 1.000.000</option>
+                                                    <option class="dropdown-item" value="1000000-2000000"{% if price_range == '1000000-2000000' %}selected{% endif %}>1.000.000 - 2.000.000</option>
+                                                    <option class="dropdown-item" value="2000000-3000000"{% if price_range == '2000000-3000000' %}selected{% endif %}>2.000.000 - 3.000.000</option>
+                                                    <option class="dropdown-item" value="3000000-"{% if price_range == '3000000-' %}selected{% endif %}>3.000.000 trở lên</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-1">
                                         <button type="submit" class="btn">Lọc</button>
-                                        <input type="hidden" name="tu_khoa" value="">
+                                        <input type="hidden" name="search_query" value="{{search_query}}">
                                     </div>
                                 </div>
                             </form>
@@ -97,6 +97,7 @@
     //GET SEARCH FORM AND PAGE LINKS
     let searchForm = document.getElementById('searchForm')
     let pageLinks = document.getElementsByClassName('page-link')
+    let filterForm = document.getElementById('filterForm')
 
     //ENSURE SEARCH FORM EXISTS
     if (searchForm) {
@@ -110,9 +111,24 @@
                 //ADD HIDDEN SEARCH INPUT TO FORM
                 searchForm.innerHTML += `<input value=${page} name="page" hidden/>`
 
-
                 //SUBMIT FORM
                 searchForm.submit()
+            })
+        }
+    }
+    if (filterForm) {
+        for (let i = 0; pageLinks.length > i; i++) {
+            pageLinks[i].addEventListener('click', function (e) {
+                e.preventDefault()
+
+                //GET THE DATA ATTRIBUTE
+                let page = this.dataset.page
+
+                //ADD HIDDEN SEARCH INPUT TO FORM
+                filterForm.innerHTML += `<input value=${page} name="page" hidden/>`
+
+                //SUBMIT FORM
+                filterForm.submit()
             })
         }
     }

@@ -38,6 +38,18 @@
                                 <label>{{form.phone.label}}</label>
                                 {{form.phone}}
                             </div>
+                            <div class="col-md-4">
+                                <label>{{form.province.label}}</label>
+                                {{form.province}}
+                            </div>
+                            <div class="col-md-4">
+                                <label>{{form.district.label}}</label>
+                                {{form.district}}
+                            </div>
+                            <div class="col-md-4">
+                                <label>{{form.ward.label}}</label>
+                                {{form.ward}}
+                            </div>
                             <div class="col-md-12">
                                 <label>{{form.address.label}}</label>
                                 {{form.address}}
@@ -81,4 +93,88 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Provinces
+        var province_arr = new Array{{ provinces|safe }};
+        $('#id_province').append($('<option>', {
+                value: '0',
+                text: 'Chọn Tỉnh/TP',
+            }, '</option>'));
+        $.each(province_arr, function (i, item) {
+            $('#id_province').append($('<option>', {
+                value: item,
+                text: item,
+            }, '</option>'));
+        });
+    });
+
+    // District
+    var districts = new Array{{ str_districts|safe }};
+    var d_a = new Array();
+    d_a[0] = 'Chọn Quận/Huyện';
+    {% for province in provinces %}
+        d_a['{{ province }}'] = districts[{{ forloop.counter0 }}];
+    {% endfor %}
+
+    // Ward
+    var wards = new Array{{ str_wards|safe }};
+    var w_a = new Array();
+    {{ data_str_wards|safe }}
+    {% for district in list_districts %}
+        w_a['{{ district }}'] = wards[{{ forloop.counter0 }}];
+    {% endfor %}
+
+    $('#id_province').change(function () {
+        var c = $(this).val();
+        var district_arr = d_a[c].split("|");
+        $('#id_district').empty();
+        $('#id_ward').empty();
+        if (c == '0') {
+            $('#id_district').append($('<option>', {
+                value: '0',
+                text: 'Chọn Quận/Huyện',
+            }, '</option>'));
+        } else {
+            $('#id_district').append($('<option>', {
+                value: '0',
+                text: 'Chọn Quận/Huyện',
+            }, '</option>'));
+            $.each(district_arr, function (i, item_district) {
+                $('#id_district').append($('<option>', {
+                    value: item_district,
+                    text: item_district,
+                }, '</option>'));
+            });
+        }
+        $('#id_ward').append($('<option>', {
+            value: '0',
+            text: 'Chọn Phường/Xã',
+        }, '</option>'));
+    });
+
+    $('#id_district').change(function(){
+        var s = $(this).val();
+        if(s == '0'){
+            $('#id_ward').empty();
+            $('#id_ward').append($('<option>', {
+                value: '0',
+                text: 'Chọn Phường/Xã',
+            }, '</option>'));
+        }
+        var ward_arr = w_a[s].split("|");
+        $('#id_ward').empty();
+        $('#id_ward').append($('<option>', {
+                value: '0',
+                text: 'Chọn Phường/Xã',
+            }, '</option>'));
+        $.each(ward_arr, function (j, item_ward) {
+            $('#id_ward').append($('<option>', {
+                value: item_ward,
+                text: item_ward,
+            }, '</option>'));
+        });
+    });
+</script>
 {% endblock content %}
