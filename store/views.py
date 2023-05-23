@@ -93,7 +93,7 @@ def product(request, pk):
     subcategories = SubCategory.objects.all().order_by('name')
 
     # Hiển thị sản phẩm thường được mua kèm
-    rules = pd.read_csv(os.path.join(settings.MEDIA_ROOT, 'store\\analysis\\rules.csv'), index_col=0)
+    rules = pd.read_csv(os.path.join(settings.MEDIA_ROOT, 'store/analysis/rules.csv'), index_col=0)
     lst = rules.values.tolist()
     list_rules = []
     for item in lst:
