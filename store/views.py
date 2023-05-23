@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, reverse
-import os
 from django.conf import settings
 from .models import *
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -10,8 +9,13 @@ from cart.cart import Cart
 from django.http import JsonResponse
 from rest_framework import viewsets, permissions
 from store.serializers import ProductSerializer
-import feedparser
 from urllib.parse import urlencode
+from django.conf import settings
+import feedparser
+from cart.views import add2cart
+import pandas as pd
+import os
+import re
 
 # Create your views here.
 brands = Brand.objects.all()
@@ -70,12 +74,38 @@ def products(request, pk):
     return render(request, 'store/product-list.html', context)
 
 def product(request, pk):
-    cart = Cart(request)
+    
+    # Update viewed
     product = Product.objects.get(pk=pk)
-    relate_products = Product.objects.filter(subcategory_id = product.subcategory_id)
+    product.viewed += 1
+    product.save()
+
+    # Add to cart
+    quantity = 1
+    if request.POST.get('btnAdd2Cart'):
+        quantity = int(request.POST.get('quantity'))
+        add2cart(request, pk, quantity)
+
+    cart = Cart(request)
+
+    # Relate product
+    relate_products = Product.objects.filter(subcategory_id = product.subcategory_id).exclude(pk=pk).order_by('-public_day')[:20]
     subcategories = SubCategory.objects.all().order_by('name')
+
+    # Hiển thị sản phẩm thường được mua kèm
+    rules = pd.read_csv(os.path.join(settings.MEDIA_ROOT, 'store\\analysis\\rules.csv'), index_col=0)
+    lst = rules.values.tolist()
+    list_rules = []
+    for item in lst:
+        if str(pk) in re.findall(r'\d+[, \d+]*', item[0])[0].split(','):
+            list_rules = re.findall(r'\d+[, \d+]*', item[1])[0].split(',')
+    recommended_products = []
+    for i in list_rules:
+        recommended_products.append(Product.objects.get(pk=int(i)))
+
     context = {'product': product, 'relate_products': relate_products,
-               'subcategories': subcategories, 'cart': cart}
+               'subcategories': subcategories, 'cart': cart, 'brands': brands,
+               'quantity': quantity, 'recommended_products': recommended_products}
     return render(request, 'store/product-detail.html', context)
 
 def contact(request):

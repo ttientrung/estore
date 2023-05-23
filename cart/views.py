@@ -6,6 +6,7 @@ from .models import Order, OrderItem
 from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 from datetime import datetime
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 def cart(request):
@@ -31,6 +32,7 @@ def cart(request):
     context = {'cart': cart}
     return render(request, 'store/cart.html', context)
 
+@require_POST
 def mua_ngay(request, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
@@ -39,6 +41,13 @@ def mua_ngay(request, product_id):
         cart.add(product, quantity)
     return redirect('cart:cart')
 
+@require_POST
+def add2cart(request, product_id, quantity):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    cart.add(product, quantity)
+
+@require_POST
 def xoa_san_pham(request, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)

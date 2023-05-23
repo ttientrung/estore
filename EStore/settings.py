@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'dashboard',
     'ckeditor',
     'ckeditor_uploader',
-    'rest_framework',  
+    'rest_framework', 
+    'analysis',
 ]
 
 MIDDLEWARE = [

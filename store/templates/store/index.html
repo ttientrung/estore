@@ -195,7 +195,7 @@
                         </div> {% endcomment %}
                     </div>
                     <div class="product-image">
-                        <a href="product-detail.html">
+                        <a href="{% url 'store:product' product.pk %}">
                             <img src="{{product.image.url}}" alt="Product Image">
                         </a>
                         {% comment %} <div class="product-action">
@@ -261,7 +261,7 @@
                         </div> {% endcomment %}
                     </div>
                     <div class="product-image">
-                        <a href="product-detail.html">
+                        <a href="{% url 'store:product' product.pk %}">
                             <img src="{{product.image.url}}" alt="Product Image">
                         </a>
                         {% comment %} <div class="product-action">
